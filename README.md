@@ -11,4 +11,4 @@ update the estimates of the rationality parameters. We detail the convergence pr
 games, showing that our algorithm effectively finds high-quality solutions (in terms of
 out-of-sample loss) and scales to large datasets.
 
-![](https://github.com/stellatogrp/learning_rationality_in_potential_games/blob/master/animations/anmimation.gif)
+![size=0.5](https://github.com/stellatogrp/learning_rationality_in_potential_games/blob/master/animations/anmimation.gif)
