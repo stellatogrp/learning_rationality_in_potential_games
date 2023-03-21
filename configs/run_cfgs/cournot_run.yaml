@@ -1,0 +1,13 @@
+name: cournot_experiment
+n_points: [50]
+n_players: [30]
+smooth: False
+n_runs: 2
+learning_rate: 3
+iterations_total: 100
+iterations_per: 4
+cores: 2
+noise: 0.1
+lr_decay: True
+prev_save: Null
+check_every: 5

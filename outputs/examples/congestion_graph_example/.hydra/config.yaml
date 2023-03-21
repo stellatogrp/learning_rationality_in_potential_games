@@ -1,0 +1,25 @@
+user: sc8647
+name: activeset_experiment
+n_nodes:
+- 8
+n_random_edges:
+- 0
+n_points:
+- 100
+n_factors:
+- 3
+n_players:
+- 2
+p_edge:
+- 0.5
+test_size: 10
+smooth: false
+n_runs: 4
+learning_rate: 0.1
+iterations_total: 400
+iterations_per: 2
+alpha: null
+cores: 4
+prev_save: null
+lr_decay: true
+n_plots: 4

@@ -1,0 +1,23 @@
+user: sc8647
+name: cournot_experiment
+n_points:
+- 50
+- 50
+- 50
+- 50
+n_players:
+- 30
+- 50
+- 70
+- 100
+smooth: false
+n_runs: 2
+learning_rate: 3
+iterations_total: 1000
+iterations_per: 4
+alpha: null
+cores: 2
+noise: 0.01
+lr_decay: true
+prev_save: null
+check_every: 5
