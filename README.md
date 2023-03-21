@@ -2,6 +2,7 @@
 
 This is the Github companion repository for the paper "Learning Rationality in Potential Games" (https://arxiv.org/abs/2303.11188) by Stefan Clarke, Gabriele Dragotto, Jaime Fernandez Fizac and Bartolomeo Stellato.
 
+# Abstract
 We propose a stochastic first-order algorithm to learn the rationality parameters of
 simultaneous and non-cooperative potential games, i.e., the parameters of the agents’
 optimization problems. Our technique combines (i.) an active-set step that enforces
