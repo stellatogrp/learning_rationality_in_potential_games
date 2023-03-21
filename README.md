@@ -11,7 +11,10 @@ update the estimates of the rationality parameters. We detail the convergence pr
 games, showing that our algorithm effectively finds high-quality solutions (in terms of
 out-of-sample loss) and scales to large datasets.
 
+### Computational Examples
 Below is a simple example of our algorithm learning a linear model to predict cost parameters of roads in a congestion game. The edge thicknesses are the 
 amount of traffic passing through the edge. The two colours indicate the two players playing the game by routing traffic through the graph.
+
+We provide computational experiments on both congestion games and Cournot games in our code.
 
 ![size=0.5](https://github.com/stellatogrp/learning_rationality_in_potential_games/blob/master/animations/anmimation.gif)
