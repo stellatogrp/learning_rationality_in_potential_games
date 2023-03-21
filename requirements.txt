@@ -1,0 +1,9 @@
+numpy
+cvxpy
+tqdm
+scipy
+hydra
+joblib
+matplotlib
+statistics
+gurobi
