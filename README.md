@@ -15,9 +15,9 @@ out-of-sample loss) and scales to large datasets.
 1. Pull repository
 2. pip install -r requirements.txt
 3. Set experiment parameters to those desired in configs folder
-4. i. To verify convergence on Cournot game run python run_script.py cournot local
-   ii. To verify convergence on Congestion game run python run_script.py cournot_gurobi local
-   iii. To compare Activeset to Gurobi run python run_script.py cournot_guyrobi local
+4. i. To verify convergence on Cournot game run python run_script.py cournot local.
+   ii. To verify convergence on Congestion game run python run_script.py cournot_gurobi local.
+   iii. To compare Activeset to Gurobi run python run_script.py cournot_guyrobi local.
 
 ### Computational Examples
 Below is a simple example of our algorithm learning a linear model to predict cost parameters of roads in a congestion game. The edge thicknesses are the 
