@@ -13,6 +13,7 @@ out-of-sample loss) and scales to large datasets.
 
 ### To run code on a new problem
 Your problem must be of the form:
+
 $$ \text{minimize}_{x} \sum_{i=1}^N \| x_i - \bar{x}_i\|^2$$
 
 ### To Reproduce Results
