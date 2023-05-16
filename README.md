@@ -11,8 +11,9 @@ update the estimates of the rationality parameters. We detail the convergence pr
 games, showing that our algorithm effectively finds high-quality solutions (in terms of
 out-of-sample loss) and scales to large datasets.
 
-### To run code on a new game
-$f$
+### To run code on a new problem
+Your problem must be of the form:
+$$ \text{minimize}_{x} \sum_{i=1}^N \| x_i - \bar{x}_i\|^2$$
 
 ### To Reproduce Results
 1. Pull repository
