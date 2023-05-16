@@ -14,7 +14,14 @@ out-of-sample loss) and scales to large datasets.
 ### To run code on a new problem
 Your problem must be of the form:
 
-$$ {minimize}_{x} \sum_{i=1}^N \| x_i - \bar{x}_i\|^2$$
+$$ 
+\begin{aligned}
+\underset{x_1 \dots x_N, \lambda_1 
+\dots \lambda_N, w, \eta }{\text{minimize}}  \quad & \sum_{i=1}^N \| x_i - \bar{x}_i\|^2 \\
+\text{such that} \quad & 0 = (R_a + \sum_{j=1}^p R_{b,j} w_j) x_i + A^T \lambda_i + C\eta + d_i \\
+& 0 \leq b_i - A x \perp \lambda_i \geq 0
+\end{aligned}
+$$
 
 ### To Reproduce Results
 1. Pull repository
