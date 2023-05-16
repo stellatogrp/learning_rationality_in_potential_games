@@ -2,14 +2,14 @@ name: cournot_experiment
 n_points: [7]
 n_players: [5]
 smooth: False
-n_runs: 16
+n_runs: 2
 learning_rate: 1
-iterations_total: 200
+iterations_total: 100
 iterations_per: 4
-alpha: null
 cores: 2
 noise: 0.1
 time_limit: 100
 secs_per_save_as: null
 secs_per_save_gurobi: null
 prev_save: null
+ball_epsilon: 0.01

@@ -8,6 +8,22 @@ import scipy as sp
 from src.algorithms.minimize_potential import minimize_potential
 
 
+def spherepicking(n):
+
+    """
+    for generating random vector on sphere
+    """
+
+    while True:
+        v = [np.random.randn() for i in range(n)]
+        sumsq = sum([x * x for x in v])
+        if sumsq > 0:
+            break
+    norm = 1.0 / np.sqrt(sumsq)
+    pt = [x * norm for x in v]
+    return np.array(pt).reshape((n, 1))
+
+
 def get_grad_w(w, x, lambd, R0, R_tilde, A, b, alpha=10.0):
 
     """
@@ -49,7 +65,7 @@ def get_target_gradient(w, x, lambd, target, R0, R_tilde, A, b, alpha):
 
 def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
         lr, n_players, get_time_info=False, clip_param=0.1, average=False,
-        C=None, d=None, start_eta=None, choice_rule='random', epsilon=1e-3):
+        C=None, d=None, start_eta=None, choice_rule='random', epsilon=1e-3, max_iter=10000, ball_epslion=0):
 
     """
     Runs an active-set algorithm to find a local minimum of the target in w.
@@ -103,7 +119,7 @@ def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
                 eta_param.value = eta
             w_param.value = np.sqrt(w)
             problem = cp.Problem(cp.Minimize(objective), constraints)
-            problem.solve(enforce_dpp=True, solver='OSQP', max_iter=100000)
+            problem.solve(enforce_dpp=True, solver='OSQP', max_iter=max_iter)
 
         # if not first iteration warm-start it
         else:
@@ -136,7 +152,8 @@ def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
             else:
                 RAp = cp.Parameter((R0.shape[0], w.size + eta.size))
 
-            wp.value = w
+            uniform_on_ball = spherepicking(w.size).reshape(w.shape)
+            wp.value = w + uniform_on_ball * ball_epslion
 
             # figure out the active constraints which are degenerate
             lambda_zeros = np.where(np.abs(lambd).flatten() <= epsilon)[0]
@@ -207,7 +224,8 @@ def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
             first_iteration = False
 
         else:
-            wp.value = w
+            uniform_on_ball = spherepicking(w.size).reshape(w.shape)
+            wp.value = w + uniform_on_ball * ball_epslion
 
             # figure out the active constraints which are degenerate
             lambda_zeros = np.where(np.abs(lambd).flatten() <= 1e-3)[0]
@@ -259,7 +277,7 @@ def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
 def run_on_data(start_w, problem_dict, iterations_total, iterations_per_point,
                 lr, start_eta=None, secs_per_save=0,
                 decay=None, lr_decay=False, max_time=np.inf, choice_rule='default',
-                epsilon=1e-3):
+                epsilon=1e-3, random_choices=True, max_iter=10000, ball_epsilon=0):
 
     """
     Repeatedly reinitializes the active set R algorithm on a new data-point and runs it again and again.
@@ -318,7 +336,10 @@ def run_on_data(start_w, problem_dict, iterations_total, iterations_per_point,
             last_save = time.time()
 
         # randomly choose a data point to run active-set on for a few steps
-        index = np.random.choice(len(b_data))
+        if random_choices:
+            index = np.random.choice(len(b_data))
+        else:
+            index = i % len(b_data)
         b = b_data[index]
         target = targets[index]
         if ds is not None:
@@ -341,7 +362,7 @@ def run_on_data(start_w, problem_dict, iterations_total, iterations_per_point,
         new_x, w, eta, lew_lambda = run(w, x, lambd.flatten(), R0, R_tilde, A, b, target,
                                         iterations_per_point, lr_, n_players, C=C, d=d,
                                         start_eta=eta, choice_rule=choice_rule,
-                                        epsilon=epsilon)
+                                        epsilon=epsilon, max_iter=max_iter, ball_epslion=ball_epsilon)
 
         if time.time() - start_time > max_time:
             break

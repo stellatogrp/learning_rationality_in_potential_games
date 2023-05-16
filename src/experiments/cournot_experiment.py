@@ -8,7 +8,7 @@ from src.utility.plot_functions import line_plot
 from src.utility.mse_calculator import get_mse
 
 
-def run_cournot_exp(problem_dict, iterations, iter_per_point, smooth=False, decay=None, lr=0.1, alpha=None,
+def run_cournot_exp(problem_dict, iterations, iter_per_point, smooth=False, decay=None, lr=0.1,
                     secs_per_save=None, lr_decay=False):
 
     """
@@ -24,7 +24,7 @@ def run_cournot_exp(problem_dict, iterations, iter_per_point, smooth=False, deca
 
     # Run the active set algorithm
     w_final, eta, ws, etas = run_on_data(np.abs(np.ones(n_factors)), problem_dict, iterations,
-                                         iter_per_point, lr, alpha=alpha,
+                                         iter_per_point, lr,
                                          start_eta=np.array([[1]]), secs_per_save=secs_per_save,
                                          lr_decay=lr_decay)
     return w_final, ws, eta, etas
