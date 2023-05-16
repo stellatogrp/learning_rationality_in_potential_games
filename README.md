@@ -18,3 +18,12 @@ amount of traffic passing through the edge. The two colours indicate the two pla
 We provide computational experiments on both congestion games and Cournot games in our code.
 
 ![size=0.5](https://github.com/stellatogrp/learning_rationality_in_potential_games/blob/master/animations/anmimation.gif)
+
+### To Reproduce Results
+
+1. Pull repository
+2. pip install -r requirements.txt
+3. Set experiment parameters to those desired in configs folder
+4. i. To verify convergence on Cournot game run python run_script.py cournot local
+   ii. To verify convergence on Congestion game run python run_script.py cournot_gurobi local
+   iii. To compare Activeset to Gurobi run python run_script.py cournot_guyrobi local
