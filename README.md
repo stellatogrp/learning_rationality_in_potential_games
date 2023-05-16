@@ -20,7 +20,6 @@ We provide computational experiments on both congestion games and Cournot games 
 ![size=0.5](https://github.com/stellatogrp/learning_rationality_in_potential_games/blob/master/animations/anmimation.gif)
 
 ### To Reproduce Results
-
 1. Pull repository
 2. pip install -r requirements.txt
 3. Set experiment parameters to those desired in configs folder
