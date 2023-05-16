@@ -11,7 +11,10 @@ update the estimates of the rationality parameters. We detail the convergence pr
 games, showing that our algorithm effectively finds high-quality solutions (in terms of
 out-of-sample loss) and scales to large datasets.
 
-### To Reproduce Results
+### To run code on a new game
+$f$
+
+### To Reproduce Results
 1. Pull repository
 2. pip install -r requirements.txt
 3. Set experiment parameters to those desired in configs folder
