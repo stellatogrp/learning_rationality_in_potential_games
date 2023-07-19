@@ -1,65 +1,22 @@
 name: activeset_experiment
-n_nodes:
-- 9
-- 15
-- 20
-- 30
-n_random_edges:
-- 0
-- 0
-- 0
-- 0
-n_points:
-- 100
-- 100
-- 100
-- 100
-n_factors:
-- 3
-- 3
-- 3
-- 3
-n_players:
-- 2
-- 2
-- 2
-- 2
-p_edge:
-- 0.3
-- 0.3
-- 0.3
-- 0.3
+n_nodes: [8]
+n_random_edges: [0]
+n_points: [100]
+n_factors: [3]
+n_players: [3]
+p_edge: [0.2]
 test_size: 10
 smooth: false
-n_runs: 1
-learning_rate: 0.2
-iterations_total: 2000
+n_runs: 4
+learning_rate: 0.5
+iterations_total: 200
 iterations_per: 2
-cores: 1
+cores: 8
 prev_save: null
-lr_decay: False
+lr_decay: true
 n_plots: 0
 check_every: 10
 time_limit: 1200
 error: 0.1
-choice_rule: random
+choice_rule: "random"
 ball_epsilon: 0.01
-random_seeds:
-- - 1
-  - 2
-  - 3
-  - 4
-- - 5
-  - 6
-  - 7
-  - 8
-- - 9
-  - 10
-  - 11
-  - 12
-- - 13
-  - 14
-  - 15
-  - 16
-save_graph: False
-exp_w: True
