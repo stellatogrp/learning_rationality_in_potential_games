@@ -1,15 +1,48 @@
 name: cournot_experiment
-n_points: [100, 100, 100, 100]
-n_players: [30, 50, 70, 100]
-smooth: False
+n_points:
+- 100
+- 100
+- 100
+- 100
+n_players:
+- 30
+- 50
+- 70
+- 100
+smooth: false
 n_runs: 5
 learning_rate: 0.3
 iterations_total: 400
 iterations_per: 4
 cores: 4
 noise: 0.1
-lr_decay: True
-prev_save: Null
+lr_decay: true
+prev_save: null
 check_every: 5
 ball_epsilon: 0.01
-random_seeds: [[1, 2, 3, 4, 5], [5, 6, 7, 8, 9], [9, 10, 11, 12, 13], [13, 14, 15, 16, 17], [18, 19, 20, 21, 22]]
+random_seeds:
+- - 1
+  - 2
+  - 3
+  - 4
+  - 5
+- - 5
+  - 6
+  - 7
+  - 8
+  - 9
+- - 9
+  - 10
+  - 11
+  - 12
+  - 13
+- - 13
+  - 14
+  - 15
+  - 16
+  - 17
+- - 18
+  - 19
+  - 20
+  - 21
+  - 22

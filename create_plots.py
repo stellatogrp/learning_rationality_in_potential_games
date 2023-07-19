@@ -34,7 +34,6 @@ with open(config_dir_2) as file:
     config_2 = yaml.safe_load(file)
 
 
-
 line_plot_two_exp([result_1, config_1], [result_2, config_2], save_dir + '/lines')
 
 
