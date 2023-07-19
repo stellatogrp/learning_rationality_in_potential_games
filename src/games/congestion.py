@@ -27,7 +27,7 @@ class CongestionNetwork:
         self.n_players = len(self.player_routes)
         self.player_colours = [[[0.5, 0, 0]], [[0., 0.5, 0]], [[0., 0, 0.5]]] + \
                               [np.random.uniform(size=3).reshape((1, 3)) for _ in range(self.n_players)]
-        self.layout = nx.spring_layout(self.G)
+        self.layout = nx.circular_layout(self.G)
         self.weights = [self.G.get_edge_data(*edge)['weight'] for edge in list(self.G.edges)]
 
         # saves edges of fixed cost (needed for Braess' paradox)

@@ -11,11 +11,14 @@ plt.rcParams.update({
 })
 
 cwd = os.getcwd()
+save_dir = cwd + '/plots'
 
-line_plot_dir_1 = cwd + '/outputs/examples/cournot_line_example'
-line_plot_dir_2 = cwd + '/outputs/examples/congestion_line_example'
-graph_dir = cwd + '/outputs/examples/congestion_graph_example'
-gurobi_dir = cwd + '/outputs/examples/gurobi_example'
+line_plot_dir_1 = cwd + '/outputs/cournot/2023-07-09/2023-07-09 23:00'
+line_plot_dir_2 = cwd + '/outputs/congestion/2023-07-11/2023-07-11 09:56'
+graph_dir = cwd + '/outputs/congestion/2023-07-10/2023-07-10 23:04'
+gurobi_dir = cwd + '/outputs/cournot_gurobi/2023-07-08/2023-07-08 22:16'
+gurobi_dir_5 = cwd + '/outputs/cournot_gurobi/2023-07-08/2023-07-08 22:16'
+
 
 result_dir_1 = line_plot_dir_1 + '/result.pickle'
 with open(result_dir_1, 'rb') as file:
@@ -30,9 +33,10 @@ config_dir_2 = line_plot_dir_2 + '/.hydra/config.yaml'
 with open(config_dir_2) as file:
     config_2 = yaml.safe_load(file)
 
-save_dir = cwd + '/plots'
+
 
 line_plot_two_exp([result_1, config_1], [result_2, config_2], save_dir + '/lines')
+
 
 plt.rcParams.update({
     "text.usetex": True,
@@ -62,4 +66,13 @@ config_dir_gurobi = gurobi_dir + '/.hydra/config.yaml'
 with open(config_dir_gurobi) as file:
     config_gurobi = yaml.safe_load(file)
 
-bar_plot(result_gurobi, save_dir + '/gurobi', config_gurobi)
+result_dir_gurobi5 = gurobi_dir_5 + '/result.pickle'
+with open(result_dir_gurobi5, 'rb') as file:
+    result_gurobi5 = pickle.load(file)
+config_dir_gurobi5 = gurobi_dir_5 + '/.hydra/config.yaml'
+with open(config_dir_gurobi5) as file:
+    config_gurobi5 = yaml.safe_load(file)
+
+print(len(result_gurobi5))
+
+bar_plot(result_gurobi5, save_dir + '/gurobi', config_gurobi5, n_to_ignore=[0, 2], timeout=2000)

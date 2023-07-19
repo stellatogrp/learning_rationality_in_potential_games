@@ -60,6 +60,8 @@ def get_target_gradient(w, x, lambd, target, R0, R_tilde, A, b, alpha):
 
     implicit_grad, lambda_grad = get_grad_w(w, x, lambd, R0, R_tilde, A, b, alpha)
     result = (x.reshape((x.size, 1)) - target.reshape((target.size, 1))).T @ implicit_grad
+    print('GRAD')
+    print(implicit_grad)
     return result, implicit_grad, lambda_grad
 
 
@@ -93,6 +95,9 @@ def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
     for i in range(R_tilde_sqrt.shape[2]):
         l, d_, p = sp.linalg.ldl(R_tilde[:, :, i])
         R_tilde_sqrt[:, :, i] = np.sqrt(np.maximum(d_, 0)) @ l.T
+
+    # boolean to keep track of whether we need to restart
+    finding_signal = True
 
     # run the algorithm
     for i in range(iterations):
@@ -247,6 +252,10 @@ def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
         x_grad_w = u.value[0:x.size, 0:w.size]
         w_grad = (x.reshape((x.size, 1)) - target.reshape((target.size, 1))).T @ x_grad_w
 
+        print('GRAD')
+        print(w_grad)
+        print(x)
+
         # update w, moving down the gradient
         update = np.maximum(-clip_param, np.minimum(clip_param, lr * w_grad.T))
         w_new = w.reshape((w.size, 1)) - update
@@ -261,6 +270,24 @@ def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
 
             eta_new = eta.reshape((eta.size, 1)) - update
             eta = eta_new
+        
+        if np.linalg.norm(w_grad.flatten()) < 1e-10 and finding_signal:
+            update = np.random.normal(size=update.size, scale=1).reshape(update.shape)
+            w_new = w.reshape((w.size, 1)) - update
+            w = np.maximum(w_new, 0)
+
+            if C is not None:
+                if np.linalg.norm(eta_grad) < 1e-10:
+                    update = np.random.normal(size=update.size, scale=0.1).reshape(update.shape)
+                    eta_new = np.maximum(eta.reshape((eta.size, 1)) - update, 0)
+                    eta = eta_new
+
+                    print('RANDOM')
+                    print(w)
+                    print(eta)
+
+        else:
+            finding_signal = False
 
         t4 = time.time()
 
@@ -277,7 +304,8 @@ def run(start_w, start_x, start_lambd, R0, R_tilde, A, b, target, iterations,
 def run_on_data(start_w, problem_dict, iterations_total, iterations_per_point,
                 lr, start_eta=None, secs_per_save=0,
                 decay=None, lr_decay=False, max_time=np.inf, choice_rule='default',
-                epsilon=1e-3, random_choices=True, max_iter=10000, ball_epsilon=0):
+                epsilon=1e-3, random_choices=True, max_iter=10000, ball_epsilon=0,
+                seed=None):
 
     """
     Repeatedly reinitializes the active set R algorithm on a new data-point and runs it again and again.
@@ -290,6 +318,9 @@ def run_on_data(start_w, problem_dict, iterations_total, iterations_per_point,
     eta: learning rate
     n_players: number of players in each game
     """
+
+    if seed is not None:
+        np.random.seed(seed)
 
     # get game parameters
     R0 = problem_dict['Ra']

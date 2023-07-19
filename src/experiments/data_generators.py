@@ -29,7 +29,7 @@ def make_graph(net_file, node_subset=None):
 
 def graph_to_dict(G, player_routes, player_demands, n_factors, n_points, test_size, w_scale=5, d_scale=1,
                   fixed_cost_edges=[], factors=None, true_coeffs=None, b_scale=1, true_eta=None, error=None,
-                  make_Ra=True):
+                  make_Ra=True, exp_w=False):
 
     network = CongestionNetwork(G, player_routes, player_demands)
     n_players = len(player_demands)
@@ -40,7 +40,10 @@ def graph_to_dict(G, player_routes, player_demands, n_factors, n_points, test_si
     # randomly choose factors and true coefficients
     if factors is None:
         factors = [[np.random.choice(5) for _ in range(len(G.edges))] for _ in range(n_factors)]
-        true_coeffs = np.random.choice(w_scale, size=n_factors) + 0.1
+        if not exp_w:
+            true_coeffs = np.random.choice(w_scale, size=n_factors) + 0.1
+        else:
+            true_coeffs = np.exp(np.random.choice(w_scale, size=n_factors) + 0.1) - 1
 
     # make R matrices
     R_s = [np.diag(factors[i]) for i in range(n_factors)]
@@ -133,7 +136,11 @@ def graph_to_dict(G, player_routes, player_demands, n_factors, n_points, test_si
     return problem_dict, weights, demands, factors, network, true_coeffs
 
 
-def generate_er_data(n_players, n_nodes, p_edge, n_points, test_size, n_factors, fixed_cost_edges=[], error=None):
+def generate_er_data(n_players, n_nodes, p_edge, n_points, test_size, n_factors, fixed_cost_edges=[], error=None,
+                     seed=None, exp_w=False):
+    
+    if seed is not None:
+        np.random.seed(seed)
 
     """
     Generates dataset according to Erdos-Renyi graph.
@@ -149,9 +156,9 @@ def generate_er_data(n_players, n_nodes, p_edge, n_points, test_size, n_factors,
         G.add_edge(e[1], e[0], weight=np.random.uniform())
 
     player_demands = np.ones(n_players)
-    player_routes = np.random.choice(n_nodes, size=2*n_players, replace=False).reshape((n_players, 2))
+    player_routes = np.random.choice(n_nodes, size=2 * n_players, replace=False).reshape((n_players, 2))
     problem_dict, weights, demands, factors, network, true_coeffs = graph_to_dict(G, player_routes, player_demands,
                                                                                   n_factors, n_points, test_size,
                                                                                   fixed_cost_edges=fixed_cost_edges,
-                                                                                  error=error)
+                                                                                  error=error, exp_w=exp_w)
     return weights, problem_dict, G, demands, player_routes, factors, network, true_coeffs

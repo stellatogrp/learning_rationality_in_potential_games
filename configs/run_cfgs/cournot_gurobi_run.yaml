@@ -1,15 +1,144 @@
 name: cournot_experiment
-n_points: [7]
-n_players: [5]
-smooth: False
-n_runs: 2
-learning_rate: 1
-iterations_total: 100
-iterations_per: 4
-cores: 2
+n_points:
+- 8
+- 8
+- 8
+- 8
+- 10
+- 20
+- 30
+- 50
+n_players:
+- 4
+- 5
+- 6
+- 8
+- 10
+- 20
+- 30
+- 50
+smooth: false
+n_runs: 5
+learning_rate: 0.3
+iterations_total: 400
+iterations_per: 2
+cores: 1
 noise: 0.1
-time_limit: 100
+time_limit: 1000
 secs_per_save_as: null
 secs_per_save_gurobi: null
-prev_save: null
+prev_gurobi_save: null
 ball_epsilon: 0.01
+random_seeds:
+- - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+- - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 110
+- - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+  - 26
+  - 27
+  - 28
+  - 29
+  - 210
+- - 30
+  - 31
+  - 32
+  - 33
+  - 34
+  - 35
+  - 36
+  - 37
+  - 38
+  - 39
+  - 310
+- - 40
+  - 41
+  - 42
+  - 43
+  - 44
+  - 45
+  - 46
+  - 47
+  - 48
+  - 49
+  - 410
+- - 50
+  - 51
+  - 52
+  - 53
+  - 54
+  - 55
+  - 56
+  - 57
+  - 58
+  - 59
+  - 510
+- - 60
+  - 61
+  - 62
+  - 63
+  - 64
+  - 65
+  - 66
+  - 67
+  - 68
+  - 69
+  - 610
+- - 70
+  - 71
+  - 72
+  - 73
+  - 74
+  - 75
+  - 76
+  - 77
+  - 78
+  - 79
+  - 710
+- - 80
+  - 81
+  - 82
+  - 83
+  - 84
+  - 85
+  - 86
+  - 87
+  - 88
+  - 89
+  - 810
+- - 90
+  - 91
+  - 92
+  - 93
+  - 94
+  - 95
+  - 96
+  - 97
+  - 98
+  - 99
+  - 910
+prev_save: null
+terminate_based_on_grad: true

@@ -92,7 +92,8 @@ def gurobi_solve(R, A, b, C, d, target=None, q=None, zeros=None, silence=True,
 
 
 def gurobi_solve_R(R0, R_tilde, A, b, d, target=None, zeros=None, silence=True,
-                   w_bound=40, Z=None, w_start=None, time_limit=None, entropy=False, cs=None, secs_per_save=None):
+                   w_bound=40, Z=None, w_start=None, time_limit=None, entropy=False, cs=None, secs_per_save=None,
+                   seed=None):
 
     """
     Solves one instance of the problem globally.
@@ -100,6 +101,12 @@ def gurobi_solve_R(R0, R_tilde, A, b, d, target=None, zeros=None, silence=True,
     """
 
     m = gp.Model('MIP')
+
+    # set the random seed
+
+    if seed is not None:
+        np.random.seed(seed)
+        m.Params.Seed = seed
     # Decision variables
     x = m.addVars(A.shape[1], name='x', vtype=GRB.CONTINUOUS, lb=-GRB.INFINITY)
     # Dual multipliers
@@ -149,8 +156,10 @@ def gurobi_solve_R(R0, R_tilde, A, b, d, target=None, zeros=None, silence=True,
     _ = m.addConstrs(b[i, 0] - sum([A[i, j]*x[j] for j in range(A.shape[1])]) == y[i] for i in range(A.shape[0]))
 
     # Constraints 3-4: indicator for complementarities
-    _ = m.addConstrs((z[i] == 1) >> (y[i] == 0.0) for i in range(A.shape[0]))
-    _ = m.addConstrs((z[i] == 0) >> (ld[i] == 0.0) for i in range(A.shape[0]))
+    #_ = m.addConstrs((z[i] == 1) >> (y[i] == 0.0) for i in range(A.shape[0]))
+   # _ = m.addConstrs((z[i] == 0) >> (ld[i] == 0.0) for i in range(A.shape[0]))
+
+    _ = [m.addSOS(GRB.SOS_TYPE1, [y[i], ld[i]]) for i in range(A.shape[0])]
 
     # constraint 5: definition of R
     for k in range(R0.shape[1]):

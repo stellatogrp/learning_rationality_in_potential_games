@@ -13,15 +13,25 @@ rc('font', weight='bold')
 rcParams['text.latex.preamble'] = [r'\usepackage{sfmath} \boldmath']
 
 
-def bar_plot(output_dicts, save, input_dict):
+def bar_plot(output_dicts, save, input_dict, timeout=2000, n_to_ignore=[], type1="bar", type2="line"):
 
     """
     Bar plot for timing experiments
     """
 
+    n_exp = len(input_dict['n_players'])
+    to_del = []
+    for i in n_to_ignore:
+        for j in range(input_dict['n_runs']):
+            to_del.append(i * input_dict['n_runs'] + j)
+        input_dict['n_players'].pop(i)
+        input_dict['n_points'].pop(i)
+
+    for index in sorted(to_del, reverse=True):
+        del output_dicts[index]
+    
     n_per_exp = input_dict['n_runs']
     n_exp = len(input_dict['n_players'])
-    timeout = input_dict['time_limit']
 
     mses = [r['mses'] for r in output_dicts]
     mse_sds = [stdev([mses[i][j] for i in range(len(mses))]) for j in range(len(mses[0]))]
@@ -37,38 +47,66 @@ def bar_plot(output_dicts, save, input_dict):
                                                                  in range(n_experiments)]
 
     fig, ax = plt.subplots(1, 2, figsize=(20, 8))
-
-    for i in range(n_experiments - 1):
-        relevant_mses = np.array([mses[j][i] for j in range(len(mses))])
-        relevant_mses = np.array(relevant_mses).reshape((n_exp, n_per_exp))
-        mse = np.sum(relevant_mses, axis=1)
-        mse_sds = [stdev(relevant_mses[i]) for i in range(len(mse))]
-        _ = ax[0].bar(ind + (i - n_experiments//2)*width, np.sqrt(mse),
-                      width, yerr=mse_sds, label=names[i].capitalize(), color=colours[i])
-    handles, labels = ax[0].get_legend_handles_labels()
-    # fig.legend(handles, labels, loc='upper left')
+    if type1 == "bar":
+        for i in range(n_experiments - 1):
+            relevant_mses = np.array([mses[j][i] for j in range(len(mses))])
+            relevant_mses = np.array(relevant_mses).reshape((n_exp, n_per_exp))
+            mse = np.sum(relevant_mses, axis=1)/input_dict['n_players'][i]
+            mse_sds = [stdev(relevant_mses[i]/input_dict['n_players'][i]) for i in range(len(mse))]
+            _ = ax[0].bar(ind + (i - n_experiments//2)*width, np.sqrt(mse),
+                          width, yerr=mse_sds, label=names[i].capitalize(), color=colours[i])
+        handles, labels = ax[0].get_legend_handles_labels()
+        #ax[0].xticks(ind, experiment_labels)
+        ax[0].set_xticks(ind, experiment_labels)
+    elif type1 == "line":
+        for i in range(n_experiments - 1):
+            relevant_mses = np.array([mses[j][i] for j in range(len(mses))])
+            relevant_mses = np.array(relevant_mses).reshape((n_exp, n_per_exp))
+            mse = np.sum(relevant_mses, axis=1)/input_dict['n_players'][i]
+            mse_sds = [stdev(relevant_mses[i]/input_dict['n_players'][i]) for i in range(len(mse))]
+            print(np.array(input_dict["n_players"]).flatten())
+            print(np.sqrt(mse))
+            _ = ax[0].errorbar(np.array(input_dict["n_players"]).astype("float").flatten(), np.sqrt(mse).flatten(), yerr=mse_sds, color=np.array(colours[i]),
+                               label=names[i].capitalize())
+            ax[0].set_xticks([int(x) for x in experiment_labels])
+        handles, labels = ax[0].get_legend_handles_labels()
     ax[0].title.set_text('Test error')
     ax[0].set_xlabel('')
     plt.sca(ax[0])
     plt.legend()
-    plt.xticks(ind, experiment_labels)
-
-    for i in range(n_experiments - 1):
-        relevant_times = np.array([times[j][i] for j in range(len(mses))])
-        relevant_times = np.array(relevant_times).reshape((n_exp, n_per_exp))
-        time = np.sum(relevant_times, axis=1)
-        _ = ax[1].bar(ind + (i - n_experiments//2)*width, np.minimum(time, 2000),
-                      width, label=names[i].capitalize(), color=colours[i])
-        _ = ax[1].axline((0, timeout), (1, timeout), linewidth=1, color='black', linestyle='dashed')
-        _ = ax[1].text(0, timeout, "timeout")
-    ax[1].set_xticks(ind, experiment_labels)
-    ax[0].set_xticks(ind, experiment_labels)
-    ax[1].title.set_text('Run-time (seconds)')
-    ax[1].set_xlabel('')
-    plt.sca(ax[0])
-    ax[0].legend()
-    ax[1].legend()
-    fig.text(0.5, 0.0, 'Number of agents', ha='center')
+    
+    if type2 == "bar":
+        for i in range(n_experiments - 1):
+            relevant_times = np.array([times[j][i] for j in range(len(mses))])
+            relevant_times = np.array(relevant_times).reshape((n_exp, n_per_exp))
+            time = np.sum(relevant_times, axis=1)
+            _ = ax[1].bar(ind + (i - n_experiments//2)*width, np.minimum(time, timeout),
+                        width, label=names[i].capitalize(), color=colours[i])
+            _ = ax[1].axline((0, timeout), (1, timeout), linewidth=1, color='black', linestyle='dashed')
+            _ = ax[1].text(0, timeout, "timeout")
+        ax[1].set_xticks(ind, experiment_labels)
+        handles, labels = ax[1].get_legend_handles_labels()
+    elif type2 == "line":
+        for i in range(n_experiments - 1):
+            relevant_times = np.array([times[j][i] for j in range(len(mses))])
+            relevant_times = np.array(relevant_times).reshape((n_exp, n_per_exp))
+            time = np.sum(relevant_times, axis=1)
+            _ = ax[1].errorbar(np.array(input_dict["n_players"]).astype("float").flatten(), np.minimum(time, timeout), color=np.array(colours[i]),
+                               label=names[i].capitalize())
+            _ = ax[1].axline((0, timeout), (1, timeout), linewidth=1, color='black', linestyle='dashed')
+            _ = ax[1].text(20, timeout, "timeout")
+            #ax[1].set_xticks([int(x) for x in experiment_labels])
+        handles, labels = ax[1].get_legend_handles_labels()
+    #ax[1].title.set_text('Run-time (seconds)')
+    #ax[1].set_xlabel('')
+    #ax[1].set_yscale('log')
+    #plt.sca(ax[0])
+    #ax[0].legend()
+    #fig.text(0.5, 0.0, 'Number of agents', ha='center')
+    #ax[0].set_ylim([0, 7])
+    ax[1].set_xlim([5, 50])
+    ax[1].set_xticks(np.array(input_dict["n_players"]).astype("float").flatten(), experiment_labels)
+    print(ind)
 
     plt.savefig(f'{save}.pdf', dpi='figure', format="pdf", metadata=None,
                 bbox_inches="tight", pad_inches=0.1,
@@ -202,7 +240,7 @@ def line_plot_two_exp(info_1, info_2, save):
 
 
 def graph_plot(problem_dict, config, n_plots, save):
-    n_players = config['n_players']
+    n_players = config['n_players'][0]
     network = CongestionNetwork(problem_dict['G'], problem_dict['routes'], np.ones(n_players))
     w_final = problem_dict['ws'][50]
     w_mid2 = problem_dict['ws'][20]
@@ -215,13 +253,13 @@ def graph_plot(problem_dict, config, n_plots, save):
     for i in range(n_plots):
         w_final = ((np.abs(w_final) + w_final) * 0.5).flatten()
         x1 = minimize_potential(problem_dict['Rb'], problem_dict['Ra'], w_init, problem_dict['A'],
-                                problem_dict['bs_test'][i], get_duals=False)
+                                problem_dict['bs_test'][i] * 2, get_duals=False)
         x3 = minimize_potential(problem_dict['Rb'], problem_dict['Ra'], w_mid2, problem_dict['A'],
-                                problem_dict['bs_test'][i], get_duals=False)
+                                problem_dict['bs_test'][i] * 2, get_duals=False)
         x4 = minimize_potential(problem_dict['Rb'], problem_dict['Ra'], w_final, problem_dict['A'],
-                                problem_dict['bs_test'][i], get_duals=False)
+                                problem_dict['bs_test'][i] * 2, get_duals=False)
         x5 = minimize_potential(problem_dict['Rb'], problem_dict['Ra'], true_cs, problem_dict['A'],
-                                problem_dict['bs_test'][i], get_duals=False)
+                                problem_dict['bs_test'][i] * 2, get_duals=False)
 
         xs.append(x1)
         xs.append(x3)

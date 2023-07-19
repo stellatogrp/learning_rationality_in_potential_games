@@ -27,16 +27,19 @@ def run_exp(i, j, input_dict, save_graph=False):
     max_time = input_dict['time_limit']
     error = input_dict['error']
     choice_rule = input_dict['choice_rule']
+    seed = input_dict['random_seeds'][i][j]
+    exp_w = input_dict['exp_w']
 
     # generate problem data
     weights, problem_dict,\
         G, demands, player_routes, factors, network, true_cs = generate_er_data(n_players, n_nodes, p_edge, n_points,
-                                                                                test_size, n_factors, error=error)
+                                                                                test_size, n_factors, error=error,
+                                                                                seed=seed, exp_w=exp_w)
 
     # Run the active set algorithm
-    w_final, ws = run_on_data(np.abs(np.ones(n_factors)), problem_dict, iterations_total,
+    w_final, ws = run_on_data(np.abs(np.ones(n_factors)) * 5, problem_dict, iterations_total,
                               iterations_per, learning_rate, max_time=max_time,
-                              choice_rule=choice_rule)
+                              choice_rule=choice_rule, seed=seed)
 
     # store the data in a list
     problem_dict['ws'] = ws
@@ -78,7 +81,7 @@ def run_full_activeset_experiment(input_dict):
         results = []
         for i in i_range:
             for j in j_range:
-                result = run_exp(i, j, input_dict=input_dict)
+                result = run_exp(i, j, input_dict=input_dict, save_graph=input_dict['save_graph'])
                 results.append(result)
 
     return results

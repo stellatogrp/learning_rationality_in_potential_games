@@ -9,11 +9,14 @@ from src.utility.mse_calculator import get_mse
 
 
 def run_cournot_exp(problem_dict, iterations, iter_per_point, smooth=False, decay=None, lr=0.1,
-                    secs_per_save=None, lr_decay=False):
+                    secs_per_save=None, lr_decay=False, seed=None):
 
     """
     Runs active-set on a Cournot game
     """
+
+    if seed is not None:
+        np.random.seed(seed)
 
     # get numbers of factors and edges from data
     n_factors = 1
@@ -41,9 +44,10 @@ def run_exp(i, j, input_dict):
     learning_rate = input_dict['learning_rate']
     noise = input_dict['noise']
     lr_decay = input_dict['lr_decay']
+    seed = input_dict['random_seeds'][i][j]
 
     # generate problem data
-    xs, R, c, R_, A, b, d_, cs, real_w = generate_data(noise, n_players, n_points)
+    xs, R, c, R_, A, b, d_, cs, real_w = generate_data(noise, n_players, n_points, seed=seed)
     bs = [b for _ in range(len(xs))]
     xs_train = xs[:-5]
     bs_train = bs[:-5]
@@ -73,7 +77,7 @@ def run_exp(i, j, input_dict):
     # run the active set
     w_final, ws, eta, etas = run_cournot_exp(problem_dict, iterations_total, iterations_per,
                                              decay=decay, smooth=smooth, lr=learning_rate,
-                                             lr_decay=lr_decay)
+                                             lr_decay=lr_decay, seed=seed)
 
     # store the data in a dict
     result_dict = {
