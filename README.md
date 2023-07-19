@@ -62,7 +62,7 @@ run_on_data(start_w, # ((q, 1) - shaped numpy array)
 ### To Reproduce Results
 1. Pull repository
 2. pip install -r requirements.txt
-3. Set experiment parameters to those desired in configs folder
+3. Set experiment parameters to those desired in configs folder (the initial parameters and random seeds in the configs are the ones used in the paper).
 4. i. To verify convergence on Cournot game run python run_script.py cournot local.
    ii. To verify convergence on Congestion game run python run_script.py cournot_gurobi local.
    iii. To compare Activeset to Gurobi run python run_script.py cournot_guyrobi local.
